@@ -23,9 +23,18 @@ namespace WindowsFormsApp9
 
             float true_wynik = 1000000 / 3;
             wynik_box.Text = "";
-            Console.Out.WriteLine(m_box.Text);
-            int m = int.Parse(m_box.Text);
-            int z = int.Parse(z_box.Text);
+            int m = 0;
+            int z = 0;
+            try
+            {
+                m = int.Parse(m_box.Text);
+                z = int.Parse(z_box.Text);
+            }
+            catch 
+            {
+                wynik_box.Text = "zły format wejscia";
+                return;
+            }
             Random rnd = new Random();
             int d = 10;
             int l = 100000;
@@ -40,7 +49,7 @@ namespace WindowsFormsApp9
             for (int j = 0; j < m; j++)
             {
 
-
+                if (czy1 && czy2) return;
                 f = 0.0F;
                 int licz = 0;
                 double old_i = 0;
@@ -53,7 +62,7 @@ namespace WindowsFormsApp9
 
                     old_i = i;
                 };
-                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy2)
+                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy1)
                 {
 
                     string wynik = "metoda prostokatów parametry to n=";
@@ -76,7 +85,7 @@ namespace WindowsFormsApp9
 
                     old_i = i;
                 };
-                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy1)
+                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy2)
                 {
                     string wynik = "metoda trapezów parametry to n=";
                     wynik += n.ToString();
@@ -95,8 +104,17 @@ namespace WindowsFormsApp9
             float true_wynik = 1000000 / 3;
             wynik_box.Text = "";
             int m = 1;
-            double z = double.Parse(z_box.Text);
-            Random rnd = new Random();
+            double z = 1.0F;
+            try
+            {
+                 z = double.Parse(z_box.Text);
+            }
+            catch 
+            {
+                wynik_box.Text = "Zły format wejscia";
+                return;
+            }
+           
             int d = 10;
             int l = 100000;
             double f = 0.0F;
@@ -105,7 +123,7 @@ namespace WindowsFormsApp9
             single.X1 = 0;
             single.X2 = 100;
             single.Area = Math.Pow(single.X2, 4) / 4 - Math.Pow(single.X1, 4) / 4;
-            int n = 0;
+            int n = 1;
             bool czy1 = false;
             bool czy2 = false;
 
@@ -116,8 +134,8 @@ namespace WindowsFormsApp9
                 f = 0.0F;
                 int licz = 0;
                 double old_i = 0;
-
-                for (double i = single.X1; i <= single.X2; i = i + 100F / n)
+                if (czy1 && czy2) return;
+                for (double i = single.X1; i <= single.X2; i = i + single.X2 / n)
                 {
 
                     licz += 1;
@@ -125,7 +143,10 @@ namespace WindowsFormsApp9
 
                     old_i = i;
                 };
-                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy1)
+                double w = Math.Abs(single.Area - f) / single.Area ;
+                Console.Out.WriteLine(w.ToString());
+
+                if ((Math.Abs(single.Area - f) / single.Area ) - (z / 100.0) < 0.01 && !czy1)
                 {
 
                     string wynik = "metoda prostokatow parametry to n=";
@@ -138,9 +159,8 @@ namespace WindowsFormsApp9
                 }
                 f = 0.0F;
 
-                n = rnd.Next(d, l);
                 old_i = 0;
-                for (double i = single.X1; i <= single.X2; i = i + 100F / n)
+                for (double i = single.X1; i <= single.X2; i = i + single.X2 / n)
                 {
 
                     licz += 1;
@@ -148,7 +168,7 @@ namespace WindowsFormsApp9
 
                     old_i = i;
                 };
-                if (Math.Abs(single.Area - f) / single.Area < z / 100.0 && !czy2)
+                if ((Math.Abs(single.Area - f) / single.Area) - (z / 100.0) < 0.01 && !czy2)
                 {
                     string wynik = "metoda trapezów parametry to n=";
                     wynik += n.ToString();
@@ -157,6 +177,7 @@ namespace WindowsFormsApp9
                     wynik += "\t\t";
                     wynik_box.Text += wynik;
                     czy2 = true;
+                   
                 }
             };
         }
@@ -175,8 +196,14 @@ namespace WindowsFormsApp9
             double f = 0.0F;
             int o = 0;
             WindowsFormsApp.SingleCount single = new SingleCount();
-            single.X1 = double.Parse(x1_box.Text);
-            single.X2 = double.Parse(x2_box.Text);
+            single.X1 = 0;
+            single.X2 = 0;
+            try
+            {
+                single.X1 = double.Parse(x1_box.Text);
+                single.X2 = double.Parse(x2_box.Text);
+            }
+            catch { wynik_box.Text = "Zły format danych"; return; }
             single.Area = (single.X2 * single.X2 * single.X2) / 3 - (single.X1 * single.X1 * single.X1) / 3;
             double blad_kwadrat = 0;
             double blad_trapez = 0;
@@ -227,23 +254,43 @@ namespace WindowsFormsApp9
 
         private void button6_Click(object sender, EventArgs e)
         {
+            var start = DateTime.UtcNow;
 
             float true_wynik = 1000000 / 3;
             wynik_box.Text = "";
-            double n = double.Parse(k_box.Text);
+            double n = 0;
+            int z = 0;
+            double x1 = 0;
+            double x2 = 0;
+            try
+            {
+                z = int.Parse(z_box.Text);
+                n = double.Parse(k_box.Text);
+                x1 = double.Parse(x1_box.Text);
+                x2 = double.Parse(x2_box.Text);
+            }
+            catch { wynik_box.Text = "ZŁY FORMAT WEJŚCIA"; return; }
+            if (n > 10) 
+            {
+                wynik_box.Text = "za duze k";return;
+            }
             n = Math.Pow(10, n);
-            int z = int.Parse(z_box.Text);
+            
             Random rnd = new Random();
             double f = 0.0F;
             int o = 0;
             WindowsFormsApp.SingleCount single = new SingleCount();
-            single.X1 = double.Parse(x1_box.Text);
-            single.X2 = double.Parse(x2_box.Text);
+            single.X1 = x1;
+            single.X2 = x2;
             single.Area = (Math.Pow(single.X1, 4) / 4) - (Math.Pow(single.X2, 4) / 4);
             while (true)
             {
 
-
+                if (start.AddMinutes(1) < DateTime.UtcNow) 
+                {
+                    wynik_box.Text = "Złe dane, obliczenia za długo się wykonywały";
+                    return;
+                }
                 f = 0.0F;
                 int licz = 0;
                 double old_i = 0;
@@ -296,13 +343,19 @@ namespace WindowsFormsApp9
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            var start = DateTime.UtcNow;
             float true_wynik = 1000000 / 3;
             wynik_box.Text = "";
-            double n = int.Parse(k_box.Text);
-            n = Math.Pow(10, n);
+            double n = 0;
+            try
+            {
+                n = int.Parse(k_box.Text);
+            }
+            catch { wynik_box.Text = "Zły format wejscia";return; }
+            if (n > 10) { wynik_box.Text = "Za duże K"; return; }
+                n = Math.Pow(10, n);
             List<int> wartosci = new List<int>();
-
+            
 
             Random rnd = new Random();
 
@@ -314,6 +367,7 @@ namespace WindowsFormsApp9
             double f2 = 0.0F;
             for (int j = -10; j < 10; j++)
             {
+
                 for (int j2 = -10; j2 < 10; j2++)
                 {
                     single.X1 = j;
@@ -322,7 +376,11 @@ namespace WindowsFormsApp9
                     f2 = 0.0F;
                     int licz = 0;
                     double old_i = 0;
-
+                    if (start.AddMinutes(1) < DateTime.UtcNow)
+                    {
+                        wynik_box.Text = "Złe dane, obliczenia za długo się wykonywały";
+                        return;
+                    }
                     for (double i = single.X1; i <= single.X2; i = i + 100F / n)
                     {
 
@@ -331,6 +389,7 @@ namespace WindowsFormsApp9
 
                         old_i = i;
                     };
+                    old_i = 0;
                     for (double i = single.X1; i <= single.X2; i = i + 100F / n)
                     {
 
@@ -380,8 +439,13 @@ namespace WindowsFormsApp9
 
             float true_wynik = 1000000 / 3;
             wynik_box.Text = "";
-
-            double n = double.Parse(k_box.Text);
+            double n = 0;
+            try
+            {
+                n = double.Parse(k_box.Text);
+            }
+            catch { wynik_box.Text = "ZŁy format wejscia";return; }
+            if (n > 10) { wynik_box.Text = "za duże k";return; }
             n = Math.Pow(10, n);
             int m = int.Parse(m_box.Text);
             Random rnd = new Random();
@@ -497,8 +561,16 @@ namespace WindowsFormsApp9
         {
 
             float true_wynik = 1000000 / 3;
-            wynik_box.Text = "";
-            int z = int.Parse(z_box.Text);
+            wynik_box.Text = "";int z = 0;
+            double x1 = 0;
+            double x2 = 0;
+            try
+            {
+                z = int.Parse(z_box.Text);
+                x1 = double.Parse(x1_box.Text);
+                x2 = double.Parse(x2_box.Text);
+            }
+            catch { wynik_box.Text = "Zły format wejscia"; return; }
             Random rnd = new Random();
 
             double f = 0.0F;
@@ -506,8 +578,9 @@ namespace WindowsFormsApp9
             WindowsFormsApp.SingleCount single = new SingleCount();
             bool czy1 = false;
             bool czy2 = false;
-            single.X1 = double.Parse(x1_box.Text);
-            single.X2 = double.Parse(x2_box.Text);
+            single.X1 =x1;
+            single.X2 = x2;
+
             for (double j = 10; j < 100000; j = j + 1)
             {
 
@@ -558,11 +631,13 @@ namespace WindowsFormsApp9
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            var start = DateTime.UtcNow;
 
 
             wynik_box.Text = "";
-            int z = int.Parse(z_box.Text);
+            int z = 0;
+            try { z = int.Parse(z_box.Text); }
+            catch {wynik_box.Text = "Zły rodzaj danych "; return; }
             Random rnd = new Random();
             int d = 10;
             int l = 100000;
@@ -577,7 +652,11 @@ namespace WindowsFormsApp9
             for (double n = 100000.0F; n > 0; n -= Math.Max(n * 0.1, 10))
             {
 
-
+                if (start.AddMinutes(1) < DateTime.UtcNow)
+                {
+                    wynik_box.Text = "Złe dane, obliczenia za długo się wykonywały";
+                    return;
+                }
                 f = 0.0F;
                 int licz = 0;
                 double old_i = 0.0F;
